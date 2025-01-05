@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	initLogs()
 	for {
 		randomMessage()
 		time.Sleep(3 * time.Second)
@@ -17,5 +18,7 @@ func main() {
 
 func randomMessage() {
 	message := faker.Paragraph(options.WithRandomStringLength(40))
-	slog.Info(message)
+	name := faker.Name()
+	domain := faker.DomainName()
+	slog.Info(message, "name", name, "domain", domain)
 }
