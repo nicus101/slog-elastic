@@ -4,9 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"os"
+
+	"github.com/elastic/go-elasticsearch/v8/typedapi/core/index"
 )
 
-type Handler struct{}
+type Handler struct {
+	esIndex *index.Index
+}
 
 var _ slog.Handler = &Handler{}
 
@@ -32,7 +37,10 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 	// TODO: in context coud be some values
 	// TODO: handle attributes
 
-	fmt.Printf("### %v\n", document)
+	_, err := h.esIndex.Document(document).Do(context.TODO())
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Err indeksing: ", err)
+	}
 
 	return nil
 }

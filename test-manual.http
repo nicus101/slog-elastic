@@ -1,0 +1,30 @@
+### Is Elastic alive?
+GET https://localhost:9200
+Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN 
+
+### Create index
+PUT https://localhost:9200/test-logs-2
+Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+
+### Check if index heathy
+GET https://localhost:9200/test-logs-2
+Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+
+### List all entries
+GET https://localhost:9200/test-logs-2/_search/
+Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+
+### Add log entry to index
+POST https://localhost:9200/test-logs-2/_doc/
+Content-Type: application/json
+Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+
+{
+    "time": "{{$datetime iso8601}}",
+    "level": "WARN",
+    "message": "lubieżne zło czycha"
+}
+
+### Delete entry
+DELETE https://localhost:9200/test-logs/_doc/BQq2NpQBiR5JAG69MIKS
+Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
