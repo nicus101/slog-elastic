@@ -1,23 +1,23 @@
 ### Is Elastic alive?
-GET https://localhost:9200
-Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN 
+GET {{$dotenv ES_LOG_ADDRESSES}}/
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
 
 ### Create index
-PUT https://localhost:9200/test-logs-2
-Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+PUT {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
 
 ### Check if index heathy
-GET https://localhost:9200/test-logs-2
-Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+GET {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
 
 ### List all entries
-GET https://localhost:9200/test-logs-2/_search/
-Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+GET {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}/_search/
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
 
 ### Add log entry to index
-POST https://localhost:9200/test-logs-2/_doc/
+POST {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}/_doc/
 Content-Type: application/json
-Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
 
 {
     "time": "{{$datetime iso8601}}",
@@ -26,5 +26,5 @@ Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
 }
 
 ### Delete entry
-DELETE https://localhost:9200/test-logs/_doc/BQq2NpQBiR5JAG69MIKS
-Authorization: Basic elastic _zygiy8zjXXh0yA7cJtN
+DELETE {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}/_doc/BQq2NpQBiR5JAG69MIKS
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}

@@ -34,12 +34,18 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 		"level":   rec.Level.String(),
 		"message": rec.Message,
 	}
-	// TODO: in context coud be some values
-	// TODO: handle attributes
+	// TODO: in context could be some values
+
+	for attr := range rec.Attrs {
+		key := "attribute." + attr.Key
+		val := attr.Value.Any()
+
+		document[key] = val
+	}
 
 	_, err := h.esIndex.Document(document).Do(context.TODO())
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Err indeksing: ", err)
+		fmt.Fprintln(os.Stderr, "Err indexing: ", err)
 	}
 
 	return nil

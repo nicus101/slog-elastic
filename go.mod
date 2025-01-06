@@ -1,6 +1,6 @@
 module github.com/nicus101/slog-elastic
 
-go 1.22.1
+go 1.23
 
 require (
 	github.com/MatusOllah/slogcolor v1.4.0
