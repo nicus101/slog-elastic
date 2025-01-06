@@ -6,27 +6,21 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/elastic/go-elasticsearch/v8"
 	slogelastic "github.com/nicus101/slog-elastic"
 )
 
 func initLogs() {
 	//slog.SetDefault(slog.New(slogcolor.NewHandler(os.Stderr, slogcolor.DefaultOptions)))
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	cfg := elasticsearch.Config{
-		Addresses: []string{
-			"https://localhost:9200",
-		},
-		Username: "elastic",
-		Password: "__secret__",
-	}
-	es, err := elasticsearch.NewTypedClient(cfg)
-	if err != nil {
-		log.Fatal("connect elastic:", err)
-	}
-	esIndex := es.Index("test-logs-2")
 
-	slog.SetDefault(slog.New(slogelastic.Config{
-		ESIndex: esIndex,
-	}.NewElasticHandler()))
+	var slogEsCfg slogelastic.Config
+	if err := slogEsCfg.LoadFromEnv(); err != nil {
+		log.Fatal("Cannot load config:", err)
+	}
+
+	if err := slogEsCfg.ConnectEsLog(); err != nil {
+		log.Fatal("Cannot connect elastic:", err)
+	}
+
+	slog.SetDefault(slog.New(slogEsCfg.NewElasticHandler()))
 }
