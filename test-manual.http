@@ -1,0 +1,30 @@
+### Is Elastic alive?
+GET {{$dotenv ES_LOG_ADDRESSES}}/
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
+
+### Create index
+PUT {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
+
+### Check if index heathy
+GET {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
+
+### List all entries
+GET {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}/_search/
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
+
+### Add log entry to index
+POST {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}/_doc/
+Content-Type: application/json
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
+
+{
+    "time": "{{$datetime iso8601}}",
+    "level": "WARN",
+    "message": "lubieżne zło czycha"
+}
+
+### Delete entry
+DELETE {{$dotenv ES_LOG_ADDRESSES}}/{{$dotenv ES_LOG_INDEX}}/_doc/BQq2NpQBiR5JAG69MIKS
+Authorization: Basic {{$dotenv ES_LOG_USER}} {{$dotenv ES_LOG_PASS}}
