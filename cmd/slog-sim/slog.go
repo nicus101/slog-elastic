@@ -5,12 +5,14 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"os"
 
+	"github.com/MatusOllah/slogcolor"
 	slogelastic "github.com/nicus101/slog-elastic"
+	slogmulti "github.com/samber/slog-multi"
 )
 
 func initLogs() {
-	//slog.SetDefault(slog.New(slogcolor.NewHandler(os.Stderr, slogcolor.DefaultOptions)))
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	var slogEsCfg slogelastic.Config
@@ -22,5 +24,9 @@ func initLogs() {
 		log.Fatal("Cannot connect elastic:", err)
 	}
 
-	slog.SetDefault(slog.New(slogEsCfg.NewElasticHandler()))
+	fanout := slogmulti.Fanout(
+		slogEsCfg.NewElasticHandler(),
+		slogcolor.NewHandler(os.Stderr, slogcolor.DefaultOptions),
+	)
+	slog.SetDefault(slog.New(fanout))
 }
