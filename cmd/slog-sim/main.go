@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"time"
 
@@ -17,8 +18,11 @@ func main() {
 }
 
 func randomMessage() {
+	ctx := context.WithValue(context.TODO(), "kot", "uwu")
+
 	message := faker.Paragraph(options.WithRandomStringLength(40))
 	name := faker.Name()
 	domain := faker.DomainName()
-	slog.Info(message, "name", name, "domain", domain)
+
+	slog.InfoContext(ctx, message, "name", name, "domain", domain)
 }

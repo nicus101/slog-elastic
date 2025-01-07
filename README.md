@@ -20,6 +20,12 @@ This package was made to solve the above.
 Having somewhat decent implementation would be better than
 cobbling ad-hoc solutions in every project.
 
+## Features
+
+ - Extracts values from *Context* using ContextAttrFunc
+ - Works with [zinc](https://zincsearch.com/)
+ - Works with [elasticsearch](https://www.elastic.co/elasticsearch/)
+ 
 ## Known issues
 
 This package is very young.
@@ -29,7 +35,6 @@ And helper methods to load configuration from `.env`.
 ## Planned features and to-do
 
  - Implement other methods of Handler.
- - Ability to catch values from `context.Context`.
  - Ability for client code to filter/rename attributes.
  - Safeguard to propagate all logs before application shutdown.
  - Bulk inserts asynchronously.

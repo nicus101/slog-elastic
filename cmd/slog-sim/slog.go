@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"log"
 	"log/slog"
@@ -23,6 +24,15 @@ func initLogs() {
 	if err := slogEsCfg.ConnectEsLog(); err != nil {
 		log.Fatal("Cannot connect elastic:", err)
 	}
+
+	slogEsCfg.ContextFuncs = append(
+		slogEsCfg.ContextFuncs,
+		func(ctx context.Context) []slog.Attr {
+			kot := ctx.Value("kot")
+			return []slog.Attr{
+				slog.Any("kot", kot),
+			}
+		})
 
 	fanout := slogmulti.Fanout(
 		slogEsCfg.NewElasticHandler(),
