@@ -26,6 +26,9 @@ type Config struct {
 	ContextFuncs []ContextAttrFunc
 }
 
+// ConnectEsLog establishes a connection to Elasticsearch using the configured credentials
+// and initializes the ESIndex client for the specified index. It returns an error if
+// the connection cannot be established.
 func (cfg *Config) ConnectEsLog() error {
 	esCfg := elasticsearch.Config{
 		Addresses: []string{
@@ -46,6 +49,10 @@ func (cfg *Config) ConnectEsLog() error {
 	return nil
 }
 
+// LoadFromEnv loads configuration from environment variables, optionally reading from a .env file if present.
+// It validates required fields and returns an error if any required field is missing or if there are issues
+// loading the environment variables. The function will not return an error if the .env file is missing,
+// but will return errors for other file-related issues.
 func (cfg *Config) LoadFromEnv() error {
 	err := godotenv.Load()
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
