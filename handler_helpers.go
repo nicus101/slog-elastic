@@ -57,9 +57,18 @@ func collectContextAttributes(ctx context.Context, contextFuncs []ContextAttrFun
 // with proper group prefixing and "attribute." prefix
 func addAttributesToDocument(document map[string]any, attrs []slog.Attr, prefix string) {
 	for _, attr := range attrs {
-		key := prefix + "attribute." + attr.Key
-		val := attr.Value.Any()
-		document[key] = val
+		if attr.Value.Kind() == slog.KindGroup {
+			// Handle group attributes
+			groupName := attr.Key
+			groupValues := attr.Value.Group()
+
+			addAttributesToDocument(document, groupValues, prefix+groupName+".")
+		} else {
+			// Handle regular attributes
+			key := prefix + attr.Key
+			val := attr.Value.Any()
+			document[key] = val
+		}
 	}
 }
 
