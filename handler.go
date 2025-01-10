@@ -54,29 +54,19 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 	return nil
 }
 
-// Add option pattern for configuration
-type Option func(*Handler)
-
-// WithErrorHandler returns an Option that sets a custom error handler function
-func WithErrorHandler(fn func(error)) Option {
-	return func(h *Handler) {
-		h.errorHandler = fn
-	}
-}
-
 // NewElasticHandler creates a new Handler with the given configuration and options
-func (cfg Config) NewElasticHandler(opts ...Option) slog.Handler {
+func (cfg Config) NewElasticHandler() slog.Handler {
+	if cfg.ErrorHandler == nil {
+		cfg.ErrorHandler = func(err error) {
+			fmt.Fprintln(os.Stderr, "Elasticsearch logging error:", err)
+		}
+	}
+
 	h := &Handler{
 		esIndex:      cfg.ESIndex,
 		contextFuncs: cfg.ContextFuncs,
 		minLevel:     cfg.MinLevel,
-		errorHandler: func(err error) {
-			fmt.Fprintln(os.Stderr, "Elasticsearch logging error:", err)
-		},
-	}
-
-	for _, opt := range opts {
-		opt(h)
+		errorHandler: cfg.ErrorHandler,
 	}
 
 	return h

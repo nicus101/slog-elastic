@@ -15,6 +15,8 @@ import (
 
 type ContextAttrFunc func(context.Context) []slog.Attr
 
+type ErrorHandlerFunc func(error)
+
 type Config struct {
 	Addresses string `env:"ES_LOG_ADDRESSES"`
 	User      string `env:"ES_LOG_USER"`
@@ -24,6 +26,7 @@ type Config struct {
 	ESIndex      *index.Index
 	MinLevel     slog.Level
 	ContextFuncs []ContextAttrFunc
+	ErrorHandler ErrorHandlerFunc
 }
 
 // ConnectEsLog establishes a connection to Elasticsearch using the configured credentials
