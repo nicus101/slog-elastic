@@ -34,8 +34,10 @@ func initLogs() {
 			}
 		})
 
+	slogHandler := slogEsCfg.NewElasticHandler().WithAttrs([]slog.Attr{slog.Bool("slog-sim", true)})
+
 	fanout := slogmulti.Fanout(
-		slogEsCfg.NewElasticHandler(),
+		slogHandler,
 		slogcolor.NewHandler(os.Stderr, slogcolor.DefaultOptions),
 	)
 	slog.SetDefault(slog.New(fanout))

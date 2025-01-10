@@ -15,6 +15,7 @@ type Handler struct {
 	contextFuncs []ContextAttrFunc
 	groups       []string
 	errorHandler func(error)
+	attrs        []slog.Attr
 }
 
 var _ slog.Handler = &Handler{}
@@ -26,7 +27,9 @@ func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 
 // WithAttrs returns the handler itself, maintaining compatibility with slog.Handler interface
 func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return h
+	h2 := *h
+	h2.attrs = append(h2.attrs, attrs...)
+	return &h2
 }
 
 // WithGroup creates a new handler with the given group name appended to the groups slice
@@ -44,7 +47,11 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 	recordAttrs := collectRecordAttributes(rec)
 	contextAttrs := collectContextAttributes(ctx, h.contextFuncs)
 
-	allAttrs := append(recordAttrs, contextAttrs...)
+	allAttrs := make([]slog.Attr, 0, len(h.attrs)+len(recordAttrs)+len(contextAttrs))
+	allAttrs = append(allAttrs, h.attrs...)
+	allAttrs = append(allAttrs, recordAttrs...)
+	allAttrs = append(allAttrs, contextAttrs...)
+
 	addAttributesToDocument(document, allAttrs, prefix)
 
 	if err := indexDocument(h.esIndex, document); err != nil {
