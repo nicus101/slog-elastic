@@ -10,11 +10,11 @@ import (
 func Example() {
 	// initialize by config
 	slogEsCfg := slogelastic.Config{
-		Addresses: "https://example.com",
-		Index:     "some-log-index",
-		User:      "john",
-		Pass:      "secret",
-		MinLevel:  slog.LevelDebug,
+		Address:  "https://example.com",
+		Index:    "some-log-index",
+		User:     "john",
+		Pass:     "secret",
+		MinLevel: slog.LevelDebug,
 	}
 
 	// load from .env or enviroment ES_LOG_xxx

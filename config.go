@@ -18,10 +18,11 @@ type ContextAttrFunc func(context.Context) []slog.Attr
 type ErrorHandlerFunc func(error)
 
 type Config struct {
-	Addresses string `env:"ES_LOG_ADDRESSES"`
-	User      string `env:"ES_LOG_USER"`
-	Pass      string `env:"ES_LOG_PASS"`
-	Index     string `env:"ES_LOG_INDEX"`
+	Address string `env:"ES_LOG_ADDRESSE"`
+	Index   string `env:"ES_LOG_INDEX"`
+
+	User string `env:"ES_LOG_USER"`
+	Pass string `env:"ES_LOG_PASS"`
 
 	ESIndex      *index.Index
 	MinLevel     slog.Level
@@ -35,7 +36,7 @@ type Config struct {
 func (cfg *Config) ConnectEsLog() error {
 	esCfg := elasticsearch.Config{
 		Addresses: []string{
-			cfg.Addresses,
+			cfg.Address,
 		},
 		Username: cfg.User,
 		Password: cfg.Pass,
@@ -67,8 +68,8 @@ func (cfg *Config) LoadFromEnv() error {
 	}
 
 	// Add validation
-	if cfg.Addresses == "" {
-		return fmt.Errorf("ES_LOG_ADDRESSES is required")
+	if cfg.Address == "" {
+		return fmt.Errorf("ES_LOG_ADDRESS is required")
 	}
 	if cfg.Index == "" {
 		return fmt.Errorf("ES_LOG_INDEX is required")
