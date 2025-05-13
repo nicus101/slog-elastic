@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/elastic/go-elasticsearch/v8/typedapi/core/index"
+	"github.com/elastic/go-elasticsearch/v8"
 )
 
 // createBaseDocument creates the initial log document with basic record information
@@ -73,8 +73,10 @@ func addAttributesToDocument(document map[string]any, attrs []slog.Attr, prefix 
 }
 
 // indexDocument sends the document to Elasticsearch using the provided index client
-// and returns any error that occurs during indexing
-func indexDocument(esIndex *index.Index, document map[string]any) error {
-	_, err := esIndex.Document(document).Do(context.TODO())
+// and returns any error that occurs during indexing. If timestamp is provided,
+// it will be used to create a time-based index name.
+func indexDocument(esClient *elasticsearch.TypedClient, indexName string, document map[string]any) error {
+
+	_, err := esClient.Index(indexName).Document(document).Do(context.TODO())
 	return err
 }

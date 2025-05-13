@@ -6,11 +6,12 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/elastic/go-elasticsearch/v8/typedapi/core/index"
+	"github.com/elastic/go-elasticsearch/v8"
 )
 
 type Handler struct {
-	esIndex      *index.Index
+	esClient     *elasticsearch.TypedClient
+	esIndex      string
 	minLevel     slog.Level
 	contextFuncs []ContextAttrFunc
 	groups       []string
@@ -54,7 +55,9 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 
 	addAttributesToDocument(document, allAttrs, prefix)
 
-	if err := indexDocument(h.esIndex, document); err != nil {
+	indexName := fmt.Sprintf("%s-%s", h.esIndex, rec.Time.Format("2006-01-02"))
+
+	if err := indexDocument(h.esClient, indexName, document); err != nil {
 		h.errorHandler(err)
 	}
 
@@ -70,7 +73,8 @@ func (cfg Config) NewElasticHandler() slog.Handler {
 	}
 
 	h := &Handler{
-		esIndex:      cfg.ESIndex,
+		esClient:     cfg.ESClient,
+		esIndex:      cfg.Index,
 		contextFuncs: cfg.ContextFuncs,
 		minLevel:     cfg.MinLevel,
 		errorHandler: cfg.ErrorHandler,

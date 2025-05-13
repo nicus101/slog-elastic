@@ -9,7 +9,6 @@ import (
 
 	"github.com/caarlos0/env"
 	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/elastic/go-elasticsearch/v8/typedapi/core/index"
 	"github.com/joho/godotenv"
 )
 
@@ -20,10 +19,10 @@ type ErrorHandlerFunc func(error)
 type Config struct {
 	Address string `env:"ES_LOG_ADDRESS"`
 	Index   string `env:"ES_LOG_INDEX"`
-	User string `env:"ES_LOG_USER"`
-	Pass string `env:"ES_LOG_PASS"`
+	User    string `env:"ES_LOG_USER"`
+	Pass    string `env:"ES_LOG_PASS"`
 
-	ESIndex      *index.Index
+	ESClient     *elasticsearch.TypedClient
 	MinLevel     slog.Level
 	ContextFuncs []ContextAttrFunc
 	ErrorHandler ErrorHandlerFunc
@@ -48,7 +47,7 @@ func (cfg *Config) ConnectEsLog() error {
 		)
 	}
 
-	cfg.ESIndex = es.Index(cfg.Index)
+	cfg.ESClient = es
 	return nil
 }
 

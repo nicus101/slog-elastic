@@ -9,14 +9,13 @@ import (
 	"time"
 
 	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/elastic/go-elasticsearch/v8/typedapi/core/index"
 )
 
-func AlreadyConnected() *index.Index {
+func AlreadyConnected() *elasticsearch.TypedClient {
 	client, _ := elasticsearch.NewTypedClient(elasticsearch.Config{
 		Transport: &TestRoundTripper{},
 	})
-	return client.Index("not-relevant")
+	return client
 }
 
 type TestRoundTripper struct{}
