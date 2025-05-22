@@ -17,10 +17,11 @@ type ContextAttrFunc func(context.Context) []slog.Attr
 type ErrorHandlerFunc func(error)
 
 type Config struct {
-	Address string `env:"ES_LOG_ADDRESS"`
-	Index   string `env:"ES_LOG_INDEX"`
-	User    string `env:"ES_LOG_USER"`
-	Pass    string `env:"ES_LOG_PASS"`
+	Address         string `env:"ES_LOG_ADDRESS"`
+	Index           string `env:"ES_LOG_INDEX"`
+	User            string `env:"ES_LOG_USER"`
+	Pass            string `env:"ES_LOG_PASS"`
+	IndexTimeFormat string `env:"ES_LOG_INDEX_TIME_FORMAT"`
 
 	ESClient     *elasticsearch.TypedClient
 	MinLevel     slog.Level
