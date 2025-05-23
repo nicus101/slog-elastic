@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/elastic/go-elasticsearch/v8"
 )
@@ -79,7 +80,7 @@ func (cfg Config) NewElasticHandler() slog.Handler {
 
 	h := &Handler{
 		esClient:        cfg.ESClient,
-		esIndex:         cfg.Index,
+		esIndex:         strings.ToLower(cfg.Index),
 		contextFuncs:    cfg.ContextFuncs,
 		minLevel:        cfg.MinLevel,
 		errorHandler:    cfg.ErrorHandler,
