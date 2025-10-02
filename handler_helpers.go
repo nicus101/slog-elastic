@@ -24,7 +24,7 @@ func buildPrefix(groups []string) string {
 	if len(groups) == 0 {
 		return ""
 	}
-	return strings.Join(groups, ".") + "."
+	return strings.Join(groups, "_") + "_"
 }
 
 // collectRecordAttributes extracts all attributes from the slog.Record
@@ -62,7 +62,7 @@ func addAttributesToDocument(document map[string]any, attrs []slog.Attr, prefix 
 			groupName := attr.Key
 			groupValues := attr.Value.Group()
 
-			addAttributesToDocument(document, groupValues, prefix+groupName+".")
+			addAttributesToDocument(document, groupValues, prefix+groupName+"_")
 		} else {
 			// Handle regular attributes
 			key := prefix + attr.Key
