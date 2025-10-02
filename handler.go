@@ -5,17 +5,20 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 
-	"github.com/elastic/go-elasticsearch/v8/typedapi/core/index"
+	"github.com/elastic/go-elasticsearch/v8"
 )
 
 type Handler struct {
-	esIndex      *index.Index
-	minLevel     slog.Level
-	contextFuncs []ContextAttrFunc
-	groups       []string
-	errorHandler func(error)
-	attrs        []slog.Attr
+	esClient        *elasticsearch.TypedClient
+	esIndex         string
+	minLevel        slog.Level
+	contextFuncs    []ContextAttrFunc
+	groups          []string
+	errorHandler    func(error)
+	attrs           []slog.Attr
+	IndexTimeFormat string
 }
 
 var _ slog.Handler = &Handler{}
@@ -54,7 +57,13 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 
 	addAttributesToDocument(document, allAttrs, prefix)
 
-	if err := indexDocument(h.esIndex, document); err != nil {
+	// check if indexTimeFormat is set
+	indexName := h.esIndex
+	if h.IndexTimeFormat != "" {
+		indexName = fmt.Sprintf("%s-%s", h.esIndex, rec.Time.Format(h.IndexTimeFormat))
+	}
+
+	if err := indexDocument(h.esClient, indexName, document); err != nil {
 		h.errorHandler(err)
 	}
 
@@ -70,10 +79,12 @@ func (cfg Config) NewElasticHandler() slog.Handler {
 	}
 
 	h := &Handler{
-		esIndex:      cfg.ESIndex,
-		contextFuncs: cfg.ContextFuncs,
-		minLevel:     cfg.MinLevel,
-		errorHandler: cfg.ErrorHandler,
+		esClient:        cfg.ESClient,
+		esIndex:         strings.ToLower(cfg.Index),
+		contextFuncs:    cfg.ContextFuncs,
+		minLevel:        cfg.MinLevel,
+		errorHandler:    cfg.ErrorHandler,
+		IndexTimeFormat: cfg.IndexTimeFormat,
 	}
 
 	return h

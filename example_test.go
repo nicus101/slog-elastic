@@ -30,7 +30,7 @@ func Example() {
 	}
 
 	// or use arleady established connection
-	slogEsCfg.ESIndex = slogelastic.AlreadyConnected()
+	slogEsCfg.ESClient = slogelastic.AlreadyConnected()
 
 	// finalize configuration and build slog.Handler
 	esHandler := slogEsCfg.NewElasticHandler()
